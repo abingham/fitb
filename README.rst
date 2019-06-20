@@ -59,6 +59,6 @@ That looks like this:
 
 This ability to `merge` is useful because you can do things like:
 
-  1. Create a default config
-  2. Load user configs from files (e.g. TOML, ini, or whatever)
-  3. Merge user configs into the default config.
+1. Create a default config
+2. Load user configs from files (e.g. TOML, ini, or whatever)
+3. Merge user configs into the default config.
