@@ -14,31 +14,43 @@ a default value.
 Quick start
 ===========
 
-The first thing you do with `fitb` is define a collection of config options::
+The first thing you do with `fitb` is define a collection of config options:
+
+.. code-block:: python
 
     options = [(('my-app', 'screen'), fitb.Option('width', 'Width of screen', 100)), 
                (('my-app', 'screen'), fitb.Option('height', 'Height of screen', 200))]
 
 Each entry in the list specifies a prefix path and the option itself. From this we can build a 
-default config option::
+default config option:
+
+.. code-block:: python
 
     config = fitb.build_default_config(options)
     
-This gives us an object like this::
+This gives us an object like this:
+
+.. code-block:: python
 
     {'my-app': {}, 'screen': {'width': 100, 'height': 200}}
 
-with which can do things like this::
+with which can do things like this:
+
+.. code-block:: python
 
     print(config['my-app']['screen']['width']
 
-or work with subconfigs::
+or work with subconfigs:
+
+.. code-block:: python
 
     screen_config = config['my-app']['screen']
     print(screen_config['width'])
 
 You can also merge configs together, putting entries from one config into another, possibly overwriting exiting options.
-That looks like this::
+That looks like this:
+
+.. code-block:: python
 
     fitb.merge(dest=config, src={'my-app': {'screen': {'width': 400}}})
 
