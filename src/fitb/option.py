@@ -25,3 +25,10 @@ class Option:
     def default(self):
         "The default value of the option."
         return self._default
+
+    def __repr__(self):
+        return "Option(name='{}', description='{}', default={})".format(
+            self.name, self.description, self.default)
+
+    def __str__(self):
+        return "{}: {} [default={}]".format(self.name, self.description, self.default)
