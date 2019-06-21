@@ -13,7 +13,8 @@ def build_default_config(spec):
         for segment in path:
             dest = dest.setdefault(segment, {})
             if not isinstance(dest, dict):
-                raise ValueError('Conflicting path: {} {}'.format(path, option))
+                raise ValueError(
+                    'Conflicting path: {} {}'.format(path, option))
         assert isinstance(dest, dict)
 
         if option.name in dest:
@@ -26,7 +27,7 @@ def build_default_config(spec):
 
 def merge(dest, src):
     """Merge two config dicts.
-    
+
     `dest` is updated in-place with the contents of `src`.
     """
     for src_name, src_val in src.items():
