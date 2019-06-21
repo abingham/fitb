@@ -2,19 +2,19 @@
 fitb
 ====
 
-Practical configuration system.
+A practical configuration system for Python.
 
-With `fitb`, you specify a collection of *configuration options* that your program/library/whatever needs. `fitb` then
+With ``fitb``, you specify a collection of *configuration options* that your program/library/whatever needs. ``fitb`` then
 helps you construct configuration objects and merge them together.
 
-A *configuration object* is simply a `dict`, so `fitb` is helping you build dicts. A *configuration option* specifies a
-path into the dict - that is, a sequence of keys into the dict and subdicts - along with a description of the option and
+A *configuration object* is simply a ``dict``, so ``fitb`` is helping you build ``dict``\s. A *configuration option* specifies a
+path into the ``dict`` - that is, a sequence of keys into the ``dict`` and subdicts - along with a description of the option and
 a default value.
 
 Quick start
 ===========
 
-The first thing you do with `fitb` is define a collection of config options:
+The first thing you do with ``fitb`` is define a collection of config options:
 
 .. code-block:: python
 
