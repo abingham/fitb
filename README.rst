@@ -4,7 +4,7 @@ fitb
 
 Practical configuration system.
 
-With `fitb`, you specify a collection of "configuration options" that your program/library/whatever needs. `fitb` then
+With `fitb`, you specify a collection of *configuration options* that your program/library/whatever needs. `fitb` then
 helps you construct configuration objects and merge them together.
 
 A *configuration object* is simply a `dict`, so `fitb` is helping you build dicts. A *configuration option* specifies a
@@ -32,7 +32,7 @@ This gives us an object like this:
 
 .. code-block:: python
 
-    {'my-app': {}, 'screen': {'width': 100, 'height': 200}}
+    {'my-app': {'screen': {'width': 100, 'height': 200}}}
 
 with which can do things like this:
 
