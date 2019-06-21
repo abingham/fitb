@@ -2,17 +2,16 @@ def build_default_config(spec):
     """Create a default config dict.
 
     Args:
-        spec: An iterable of (path, Option) tuples. Each path is
-            an iterable of strings.    
+        spec: An iterable of (path, Option) tuples. Each path is an iterable of strings describing the path to the 
+            option in the config.  
 
-    Returns: A dict tree with all of the options in the spec
-         represented by their default value.
+    Returns: A dict tree with all of the options in the spec represented by their default value.
     """
     config = {}
     for path, option in spec:
         dest = config
         for segment in path:
-            dest = config.setdefault(segment, {})
+            dest = dest.setdefault(segment, {})
             if not isinstance(dest, dict):
                 raise ValueError('Conflicting path: {} {}'.format(path, option))
         assert isinstance(dest, dict)
