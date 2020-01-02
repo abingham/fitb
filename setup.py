@@ -1,40 +1,10 @@
-import io
-import os
+from pathlib import Path
 from setuptools import setup, find_packages
 
 
-def local_file(*name):
-    return os.path.join(
-        os.path.dirname(__file__),
-        *name)
-
-
-def read(*names, **kwargs):
-    with io.open(
-        os.path.join(os.path.dirname(__file__), *names),
-        encoding=kwargs.get("encoding", "utf8")
-    ) as fp:
-        return fp.read()
-
-
-def read_version():
-    """Read the `(version-string, version-info)` from
-    `src/fitb/version.py`.
-    """
-
-    version_file = local_file(
-        'src', 'fitb', 'version.py')
-    local_vars = {}
-    with open(version_file) as handle:
-        exec(handle.read(), {}, local_vars)  # pylint: disable=exec-used
-    return (local_vars['__version__'], local_vars['__version_info__'])
-
-
-long_description = read(local_file('README.rst'), mode='rt')
-
 setup(
     name='fitb',
-    version=read_version()[0],
+    version='1.0.0',
     packages=find_packages('src'),
 
     author='Austin Bingham',
@@ -53,12 +23,12 @@ setup(
     include_package_data=True,
     package_dir={'': 'src'},
     # package_data={'fitb': . . .},
-    install_requires=[],
+    install_requires=['stevedore'],
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax, for
     # example: $ pip install -e .[dev,test]
     extras_require={
-        # 'dev': ['check-manifest', 'wheel'],
+        'dev': ['bumpversion', 'twine'],
         # 'doc': ['sphinx', 'cartouche'],
         'test': ['hypothesis', 'pytest'],
     },
@@ -67,5 +37,5 @@ setup(
         #    'fitb = fitb.cli:main',
         # ],
     },
-    long_description=long_description,
+    long_description=Path('README.rst').read_text(),
 )
