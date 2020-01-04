@@ -2,63 +2,45 @@
 fitb
 ====
 
-A practical configuration system for Python.
+A practical program extension system.
 
-With ``fitb``, you specify a collection of *configuration options* that your program/library/whatever needs. ``fitb`` then
-helps you construct configuration objects and merge them together.
+``fitb`` lets you define *extension points* which are named points in your program that can be extended externally. Each
+extension point can any number of *extensions* associated with it, each providing a different method of extension at
+that point. Each extension can be configured with *configuration options* that it defines.
 
-A *configuration object* is simply a ``dict``, so ``fitb`` is helping you build ``dict``\s. A *configuration option* specifies a
-path into the ``dict`` - that is, a sequence of keys into the ``dict`` and subdicts - along with a description of the option and
-a default value.
+Given an extension point with a number of extensions each accepting their own set of configuration options, ``fitb``
+makes it easy to construct a default configuration. You can take this default configuration, modify as you see fit (e.g.
+by loading configuration data from a file), and then *activate* the extension with the configuration. Activation tells
+each extension to actually instantiate some object which fulfills the role of extending the extension point.
 
-Quick start
-===========
+A motivating example
+====================
 
-The first thing you do with ``fitb`` is define a collection of config options:
+Suppose you had a program that performed some complex calculation and then reported the result to a user. The nature
+of the reporting could be to file, to screen, to a database, or in ways you can't think of right now. To account for
+this reporting flexibility, you'd like your program reporting to be *extensible*; users should be able to provide new
+kinds of reporting **without you needing to change your program**. This is where ``fitb`` comes in.
 
-.. code-block:: python
+With ``fitb``, you'd define an extension point for reporting. Extension points are named, so let's cleverly call the
+point "reporting". Then you'd add extensions to the extension point for each of the kinds of reports you want to
+generate. Critically, other developers can add extensions as well without you having to modify your program.
 
-    options = [(('my-app', 'screen'), fitb.Option('width', 'Width of screen', 100)), 
-               (('my-app', 'screen'), fitb.Option('height', 'Height of screen', 200))]
+Each extension will have a name, so let's consider one called "pdf" that produces a PDF. A critical part of the PDF is
+the font name and size it will use, so the PDF extension will define two configurable options, "font-size" and
+"font-name", each with a default value. Other extensions will have options for their own specific needs.
 
-Each entry in the list specifies a prefix path and the option itself. From this we can build a 
-default config option:
+With the extension point and extensions in place, you can then create a configuration - really just a specially
+structured dictionary - describing the default config that you can modify if you want. Then, you can activate the
+extension point with the configuration, thereby asking each reporting extension to instantiate a reporting object based
+on the information in the configuration. With your collection of reporting extensions available, the user can select which
+they want to use by specifying the name of the extension they want.
 
-.. code-block:: python
+What are configurations?
+========================
 
-    config = fitb.build_default_config(options)
-    
-This gives us an object like this:
+.. TODO:: Describe the idea of configurations, extension-point sub-config, extension-subconfigs, and so forth.
 
-.. code-block:: python
+Concrete examples
+=================
 
-    {'my-app': {'screen': {'width': 100, 'height': 200}}}
-
-with which can do things like this:
-
-.. code-block:: python
-
-    print(config['my-app']['screen']['width']
-
-or work with subconfigs:
-
-.. code-block:: python
-
-    screen_config = config['my-app']['screen']
-    print(screen_config['width'])
-
-You can also merge configs together, putting entries from one config into another, possibly overwriting exiting options.
-That looks like this:
-
-.. code-block:: python
-
-    fitb.merge(dest=config, src={'my-app': {'screen': {'width': 400}}})
-
-    # The `dest` config has been updated
-    assert config['my-app']['screen']['width'] == 400
-
-This ability to `merge` is useful because you can do things like:
-
-1. Create a default config
-2. Load user configs from files (e.g. TOML, ini, or whatever)
-3. Merge user configs into the default config.
+See the "examples" directory for examples of how to use fitb.
