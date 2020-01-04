@@ -1,29 +1,6 @@
-def build_default_config(spec):
-    """Create a default config dict.
+import logging
 
-    Args:
-        spec: An iterable of (path, Option) tuples. Each path is
-            an iterable of strings.
-
-    Returns: A dict tree with all of the options in the spec
-         represented by their default value.
-    """
-    config = {}
-    for path, option in spec:
-        dest = config
-        for segment in path:
-            dest = dest.setdefault(segment, {})
-            if not isinstance(dest, dict):
-                raise ValueError(
-                    'Conflicting path: {} {}'.format(path, option))
-        assert isinstance(dest, dict)
-
-        if option.name in dest:
-            raise ValueError('Conflicting option: {} {}'.format(path, option))
-
-        dest[option.name] = option.default
-
-    return config
+log = logging.getLogger()
 
 
 def merge(dest, src):
@@ -40,3 +17,15 @@ def merge(dest, src):
             merge(dest_val, src_val)
         else:
             dest[src_name] = src_val
+
+    return dest
+
+
+def default_config(*extension_points):
+    config = {}
+    for point in extension_points:
+        merge(
+            config,
+            {point.name: point.default_config()}
+        )
+    return config
