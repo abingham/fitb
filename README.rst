@@ -32,8 +32,8 @@ the font name and size it will use, so the PDF extension will define two configu
 With the extension point and extensions in place, you can then create a configuration - really just a specially
 structured dictionary - describing the default config that you can modify if you want. Then, you can activate the
 extension point with the configuration, thereby asking each reporting extension to instantiate a reporting object based
-on the information in the configuration. With your collection of reporting extensions available, the user can select which
-they want to use by specifying the name of the extension they want.
+on the information in the configuration. With your collection of reporting extensions available, the user can select
+which they want to use by specifying the name of the extension they want.
 
 What are configurations?
 ========================
