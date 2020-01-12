@@ -38,7 +38,7 @@ which they want to use by specifying the name of the extension they want.
 What are configurations?
 ========================
 
-.. TODO:: Describe the idea of configurations, extension-point sub-config, extension-subconfigs, and so forth.
+.. TODO: Describe the idea of configurations, extension-point sub-config, extension-subconfigs, and so forth.
 
 Concrete examples
 =================
