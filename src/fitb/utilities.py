@@ -1,3 +1,4 @@
+import copy
 import logging
 
 log = logging.getLogger()
@@ -6,16 +7,29 @@ log = logging.getLogger()
 def merge(dest, src):
     """Merge two config dicts.
 
-    `dest` is updated in-place with the contents of `src`.
+    Merging can't happen if the dictionaries are incompatible. This happens when the same path in `src` exists in `dest`
+    and one points to a `dict` while another points to a non-`dict`.
+
+    Returns: A new `dict` with the contents of `src` merged into `dest`.
+
+    Raises: 
+        ValueError: If the two dicts are incompatible.
     """
+    dest = copy.deepcopy(dest)
+
     for src_name, src_val in src.items():
         if isinstance(src_val, dict):
-            dest_val = dest.setdefault(src_name, {})
+            dest_val = dest.get(src_name, {})
             if not isinstance(dest_val, dict):
                 raise ValueError('Incompatible config structures')
 
-            merge(dest_val, src_val)
+            dest[src_name] = merge(dest_val, src_val)
         else:
+            try:
+                if isinstance(dest[src_name], dict):
+                    raise ValueError('Incompatible config structures')
+            except KeyError:
+                pass
             dest[src_name] = src_val
 
     return dest
@@ -24,7 +38,7 @@ def merge(dest, src):
 def default_config(*extension_points):
     config = {}
     for point in extension_points:
-        merge(
+        config = merge(
             config,
             {point.name: point.default_config()}
         )

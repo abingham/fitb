@@ -56,7 +56,7 @@ class ExtensionPoint:
     def default_config(self):
         config = {}
         for extension in self._extensions:
-            merge(
+            config = merge(
                 config,
                 {
                     extension.name: {
