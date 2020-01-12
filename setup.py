@@ -30,7 +30,7 @@ setup(
     extras_require={
         'dev': ['bumpversion', 'twine'],
         # 'doc': ['sphinx', 'cartouche'],
-        # 'test': ['hypothesis', 'pytest'],
+        'test': ['hypothesis', 'pytest'],
     },
     entry_points={
         # 'console_scripts': [
