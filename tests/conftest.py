@@ -23,8 +23,8 @@ def frantic():
     return "The roof is on fire"
 
 
-# This creates an extension point and adds the two reporting functions to it as extensions.
-def extension_points():
+@pytest.fixture()
+def reporters():
     # Create the extension point
     reporters = fitb.ExtensionPoint('reporters')
 
@@ -48,7 +48,11 @@ def extension_points():
         description='Report in lower case',
         activate=lambda full, ext: report_in_lower)
 
-    # Do the same for message generators
+    return reporters
+
+
+@pytest.fixture()
+def generators():
     generators = fitb.ExtensionPoint('generators')
 
     generators.add(
@@ -61,47 +65,4 @@ def extension_points():
         description='A frantic message',
         activate=lambda full, ext: frantic)
 
-    return reporters, generators
-
-
-
-
-# def parse_command_line():
-#     report_parser = argparse.ArgumentParser()
-#     report_parser.add_argument('reporter')
-#     report_parser.add_argument('generator')
-#     report_parser.add_argument('--loud', action='store_true')
-
-#     return report_parser.parse_args()
-
-
-# def main():
-#     args = parse_command_line()
-
-#     # Get the reporters ExtensionPoint
-#     reporters, generators = configure_extensions()
-
-#     # Get the default configuration for the ExtensionPoint
-#     config = fitb.default_config(reporters, generators)
-
-#     # At this point you could modify `config`, perhaps based on command line flags or saves configuration information.
-#     config['reporters']['all-caps']['loud'] = args.loud
-
-#     # Activate the extension point with your config
-#     reporters.activate(config)
-#     generators.activate(config)
-
-#     print('config:', config)
-#     print('available reporters:', list(reporters.names()))
-#     print('available generators:', list(generators.names()))
-
-#     # Get the reporter the user requested
-#     reporter = reporters[args.reporter]
-
-#     # Generate a report
-#     message = generators[args.generator]()
-#     reporter(message)
-
-
-# if __name__ == '__main__':
-#     main()
+    return generators

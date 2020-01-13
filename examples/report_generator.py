@@ -92,19 +92,15 @@ def main():
     # At this point you could modify `config`, perhaps based on command line flags or saves configuration information.
     config['reporters']['all-caps']['loud'] = args.loud
 
-    # Activate the extension point with your config
-    reporters.activate(config)
-    generators.activate(config)
-
     print('config:', config)
-    print('available reporters:', list(reporters.names()))
-    print('available generators:', list(generators.names()))
+    print('available reporters:', list(reporters))
+    print('available generators:', list(generators))
 
     # Get the reporter the user requested
-    reporter = reporters[args.reporter]
+    reporter = reporters.activate(args.reporter, config)
 
     # Generate a report
-    message = generators[args.generator]()
+    message = generators.activate(args.generator, config)()
     reporter(message)
 
 

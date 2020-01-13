@@ -6,7 +6,6 @@ from hypothesis import assume, given
 
 from fitb.utilities import merge
 
-# config = st.deferred(lambda: st.dictionaries(st.text(), (st.integers() | config)))
 config = st.recursive(st.dictionaries(st.text(printable), st.integers()),
                       lambda children: st.dictionaries(st.text(printable), children),
                       max_leaves=5)

@@ -22,8 +22,7 @@ class ExtensionPoint:
 
     def __init__(self, name):
         self._name = name
-        self._extensions = []
-        self._activated = {}
+        self._extensions = {}
 
     @property
     def name(self):
@@ -39,23 +38,46 @@ class ExtensionPoint:
             config_options=config_options,
             activate=activate)
 
-        if extension.name in (x.name for x in self._extensions):
+        if extension.name in self._extensions:
             raise ValueError(
                 'Extension {} already in {}'.format(extension.name, self))
 
-        self._extensions.append(extension)
+        self._extensions[extension.name] = extension
 
-    def activate(self, config):
-        """Activate all extensions.
+    def activate(self, name, config):
+        """Activate an extension.
+
+        Args:
+            name: The name of the extension to activate.
+            config: The full config dict.
+
+        Returns:
+            The activate extension object (i.e. as returned from the extension on activation).
+
+        Raises:
+            KeyError: There is no extension named `name`.
         """
-        for extension in self._extensions:
-            self._activated[extension.name] = extension.activate(
-                config,
-                config.get(self.name, {}).get(extension.name, {}))
+        return self._extensions[name].activate(
+            config,
+            config.get(self.name, {}).get(name, {}))
 
     def default_config(self):
+        """The complete default configuration dict for this point.
+
+        This examines each extension point and constructs a config containing all of the
+        default values for their configuration options.
+
+        The config is structured like this::
+
+            {
+                extension_point_name: {
+                    extension_name: { . . . default extension config . . . },
+                    . . .
+                }
+            }
+        """
         config = {}
-        for extension in self._extensions:
+        for extension in self._extensions.values():
             config = merge(
                 config,
                 {
@@ -68,12 +90,18 @@ class ExtensionPoint:
         return config
 
     def __getitem__(self, name):
-        "Get a configured extension object with the given name."
-        return self._activated[name]
+        """Get the extension object with the given name.
+        
+        Returns: An Extension instance.
 
-    def names(self):
-        "Iterable of activated extension names."
-        return iter(self._activated)
+        Raises:
+            KeyError: There is no extension with that name.
+        """
+        return self._extensions[name]
+
+    def __iter__(self):
+        "Iterable of extension names."
+        return iter(self._extensions)
 
     def __repr__(self):
         return "ExtensionPoint(name='{}')".format(self.name)
