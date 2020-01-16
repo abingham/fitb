@@ -9,7 +9,7 @@ log = logging.getLogger()
 
 
 def load_from_pkg_resources(namespace):
-    """Populate an dict of ExtensionPoints using pkg_resources.
+    """Discover ExtensionPoints using pkg_resources.
 
     This uses pkg_resources to scan the entry-points for `namespace`. Each dotted entrypoint name should have two parts.
     The first will be `namespace` and the second will be assumed to be the name of the entry point to which it belongs.

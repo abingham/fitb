@@ -1,4 +1,9 @@
 class Profile:
+    """A collection of configuration options and extension points.
+    
+    This is essentially an "application configuration", combining configuration details along
+    with the available extensions (inside extension points).
+    """
     def __init__(self):
         self._options = set()
         self._extension_points = _ExtensionPoints()
