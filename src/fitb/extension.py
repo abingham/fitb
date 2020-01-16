@@ -26,9 +26,8 @@ class Extension:
 
     @property
     def config_options(self):
-        "An iterable of ConfigOptions for the extension."
+        "An iterable of Options for the extension."
         return self._config_options
 
     def __repr__(self):
         return "Extension(name='{}')".format(self.name)
-

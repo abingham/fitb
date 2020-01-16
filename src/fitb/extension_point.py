@@ -9,9 +9,9 @@ them. This activation produces the object that actually embodies the implementat
 """
 
 import logging
-from fitb.utilities import merge
 
 from .extension import Extension
+from .option import Option
 
 log = logging.getLogger()
 
@@ -61,37 +61,25 @@ class ExtensionPoint:
             config,
             config.get(self.name, {}).get(name, {}))
 
-    def default_config(self):
-        """The complete default configuration dict for this point.
+    def config_options(self):
+        """All configurable options for this extension point.
 
-        This examines each extension point and constructs a config containing all of the
-        default values for their configuration options.
-
-        The config is structured like this::
-
-            {
-                extension_point_name: {
-                    extension_name: { . . . default extension config . . . },
-                    . . .
-                }
-            }
+        Iterable of Options.
         """
-        config = {}
         for extension in self._extensions.values():
-            config = merge(
-                config,
-                {
-                    extension.name: {
-                        option.name: option.default
-                        for option in extension.config_options
-                    }
-                }
-            )
-        return config
+            path = (self.name, extension.name)
+            for option in extension.config_options:
+                yield Option(
+                    name=option.name,
+                    description=option.description,
+                    default=option.default,
+                    # Each option path is "translated" into the overall config
+                    path=option.path + path
+                )
 
     def __getitem__(self, name):
         """Get the extension object with the given name.
-        
+
         Returns: An Extension instance.
 
         Raises:
@@ -101,7 +89,7 @@ class ExtensionPoint:
 
     def __iter__(self):
         "Iterable of extension names."
-        return iter(self._extensions)
+        return iter(self._extensions.values())
 
     def __repr__(self):
         return "ExtensionPoint(name='{}')".format(self.name)

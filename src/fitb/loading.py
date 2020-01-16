@@ -20,10 +20,8 @@ def load_from_pkg_resources(namespace):
     Args:
         namespace: The pkg_resources namespace to scan.
 
-    Returns: A dict mapping extension point names to ExtensionPoint objects.
+    Returns: An iterable of ExtensionPoints.
     """
-    points = {}
-
     for entry_point_name in pkg_resources.get_entry_map(namespace):
         toks = entry_point_name.split('.')
         if len(toks) == 1:
@@ -35,7 +33,7 @@ def load_from_pkg_resources(namespace):
 
         assert toks[0] == namespace
 
-        extension_point = points.setdefault(toks[1], ExtensionPoint(toks[1]))
+        extension_point = ExtensionPoint(toks[1])
 
         manager = ExtensionManager(
             '.'.join(toks),
@@ -44,7 +42,7 @@ def load_from_pkg_resources(namespace):
         for extension in manager:
             extension.plugin(extension_point)
 
-    return points
+        yield extension_point
 
 
 def _log_extension_loading_failure(_mgr, extension_point, err):

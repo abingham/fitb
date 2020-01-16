@@ -6,30 +6,11 @@ def test_names(reporters, generators):
     assert generators.name == 'generators'
 
 
-def test_default_config(reporters, generators):
-    assert reporters.default_config() == {
-        'all-caps': {
-            'loud': False
-        },
-        'lower': {}
-    }
-
-    assert generators.default_config() == {
-        'calm': {},
-        'frantic': {}
-    }
-
+# TODO: Test config_options()
 
 def test_iterate(reporters, generators):
-    assert sorted(reporters) == ['all-caps', 'lower']
-    assert sorted(generators) == ['calm', 'frantic']
-
-
-def test_get_by_name(reporters, generators):
-    for name in reporters:
-        reporters[name]
-    for name in generators:
-        generators[name]
+    assert sorted([e.name for e in reporters]) == ['all-caps', 'lower']
+    assert sorted([e.name for e in generators]) == ['calm', 'frantic']
 
 
 def test_get_name_raises_KeyError_on_missing_name(reporters, generators):

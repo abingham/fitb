@@ -12,7 +12,7 @@ def merge(dest, src):
 
     Returns: A new `dict` with the contents of `src` merged into `dest`.
 
-    Raises: 
+    Raises:
         ValueError: If the two dicts are incompatible.
     """
     dest = copy.deepcopy(dest)
@@ -33,13 +33,3 @@ def merge(dest, src):
             dest[src_name] = src_val
 
     return dest
-
-
-def default_config(*extension_points):
-    config = {}
-    for point in extension_points:
-        config = merge(
-            config,
-            {point.name: point.default_config()}
-        )
-    return config
