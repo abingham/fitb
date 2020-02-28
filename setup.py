@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='fitb',
-    version='3.0.0',
+    version='3.0.1',
     packages=find_packages('src'),
 
     author='Austin Bingham',
