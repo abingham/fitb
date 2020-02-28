@@ -1,11 +1,26 @@
 import logging
 
-import pkg_resources
-from stevedore import ExtensionManager
-
 from .extension_point import ExtensionPoint
 
 log = logging.getLogger()
+
+
+def load_from_importlib(namespace):
+    import importlib.metadata
+
+    def points():
+        for full_name, points in importlib.metadata.entry_points().items():
+            ns, _, extension_point_name = full_name.partition(".")
+            if ns != namespace:
+                continue
+            yield extension_point_name, points
+
+    for epname, points in points():
+        extension_point = ExtensionPoint(epname)
+        for point in points:
+            point.load()(extension_point)
+
+        yield extension_point
 
 
 def load_from_pkg_resources(namespace):
@@ -22,6 +37,9 @@ def load_from_pkg_resources(namespace):
 
     Returns: An iterable of ExtensionPoints.
     """
+    import pkg_resources
+    from stevedore import ExtensionManager
+
     for entry_point_name in pkg_resources.get_entry_map(namespace):
         toks = entry_point_name.split('.')
         if len(toks) == 1:
