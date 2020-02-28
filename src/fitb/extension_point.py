@@ -88,7 +88,7 @@ class ExtensionPoint:
         return self._extensions[name]
 
     def __iter__(self):
-        "Iterable of extension names."
+        "Iterable of Extension objects."
         return iter(self._extensions.values())
 
     def __repr__(self):
