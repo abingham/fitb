@@ -1,11 +1,47 @@
 import logging
 
-import pkg_resources
-from stevedore import ExtensionManager
-
 from .extension_point import ExtensionPoint
 
 log = logging.getLogger()
+
+
+def load_from_module(extension_point, module_name, extension_function_name='__extend__', propagate_exceptions=False):
+    """Load an ExtensionPoint from a Python module.
+
+    This imports a module and scans it for immediate sub-modules, i.e. those modules nested directly under the first
+    module. It imports each sub-module and looks for a callable object by name (by default "__extend__"). If the
+    callable is found, it's called with an `ExtensionPoint` as the only argument.
+
+    This is primarily intended to load extensions from *namespace packages*, but it's not limited to them. Since
+    namespace packages can be extended by different packages, this makes them useful for plugins.
+
+    Args:
+        extension_point: An `ExtensionPoint` instance to populate. This is what is passed to the extension callables.
+        module_name: The name of the module to scan for sub-modules.
+        extension_function_name: The name of the function/callable to look for in the scanned sub-modules.
+        propagate_exceptions: Whether exceptions generated during importing and extension invocation should be
+            propagated.
+
+    Returns: The `ExtensionPoint` object passed as the first argument.
+    """
+    import importlib
+    import pkgutil
+
+    exception_signature = () if propagate_exceptions else (Exception,)
+
+    module = importlib.import_module(module_name)
+
+    for info in pkgutil.iter_modules(module.__path__):
+        ext_module_name = f'{module_name}.{info.name}'
+        try:
+            ext_module = importlib.import_module(ext_module_name)
+            ext_func = getattr(ext_module, extension_function_name, None)
+            if ext_func is not None:
+                ext_func(extension_point)
+        except exception_signature:
+            log.exception(f"Unable to load extension {ext_module_name}")
+
+    return extension_point
 
 
 def load_from_pkg_resources(namespace):
@@ -22,6 +58,9 @@ def load_from_pkg_resources(namespace):
 
     Returns: An iterable of ExtensionPoints.
     """
+    import pkg_resources
+    from stevedore import ExtensionManager
+
     for entry_point_name in pkg_resources.get_entry_map(namespace):
         toks = entry_point_name.split('.')
         if len(toks) == 1:
