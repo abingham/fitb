@@ -5,7 +5,7 @@ fitb
 A practical program extension system.
 
 ``fitb`` lets you define *extension points* which are named points in your program that can be extended externally. Each
-extension point can any number of *extensions* associated with it, each providing a different method of extension at
+extension point can have any number of *extensions* associated with it, each providing a different method of extension at
 that point. Each extension can be configured with *configuration options* that it defines.
 
 Given an extension point with a number of extensions each accepting their own set of configuration options, ``fitb``
